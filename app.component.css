@@ -1,0 +1,22 @@
+#node_userhandle + path{ 
+    stroke: #0064be; 
+    stroke-width: 2; 
+} 
+
+#decision_userhandle + path { 
+    stroke: #eeb111; 
+    stroke-width: 2; 
+}
+
+#end_userhandle + path { 
+    stroke: #c4202f; 
+    stroke-width: 2; 
+}
+
+button {
+    margin: 2px;
+}
+
+#borderRect {
+    visibility: hidden;
+}

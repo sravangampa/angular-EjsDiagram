@@ -1,10 +1,12 @@
-import { Component,ViewChild, ViewEncapsulation, AfterViewInit } from '@angular/core';
+import { Component,ViewChild, ViewEncapsulation, AfterViewInit, HostListener } from '@angular/core';
 import { DiagramComponent } from '@syncfusion/ej2-angular-diagrams';
 import {
   NodeModel, Connector, SnapSettingsModel, 
 } from '@syncfusion/ej2-diagrams';  
 import { closest, Ajax } from '@syncfusion/ej2-base';
- 
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/fromEvent';
+
 
 @Component({
   selector: 'app-root',
@@ -12,8 +14,14 @@ import { closest, Ajax } from '@syncfusion/ej2-base';
   styleUrls: ['./app.component.css'],
    encapsulation: ViewEncapsulation.None
 })
+
+
 export class AppComponent implements AfterViewInit {
   //Diagram Properties
+   @HostListener('mousemove', ['$event']) onMouseMove(event) {
+    // console.log('clientX:' +event.clientX);
+    // console.log('clientY:' +event.clientY);
+ }
   @ViewChild('diagram', null) public diagram: DiagramComponent; 
   public nodes: NodeModel[] = [
       {
@@ -25,6 +33,8 @@ export class AppComponent implements AfterViewInit {
           shape: { type: "HTML" },          
       }
   ];
+
+
   public  text:string = "Click";
   public size:string = "large";
   public nodeDefaults(node: NodeModel): NodeModel {
@@ -80,17 +90,45 @@ export class AppComponent implements AfterViewInit {
   public onDragStop(args: any): void {
     let targetEle: any = closest(args.target, '.e-droppable');
     targetEle = targetEle ? targetEle : args.target;
+
+
+
+console.log('OffsetX:'+args.event.clientX);
+console.log('OffsetY:'+args.event.clientY);
+
+     let zoom = this.diagram.scrollSettings.currentZoom;
+     
+     let horizontalOffset = this.diagram.scrollSettings.horizontalOffset;
+     let verticalOffset = this.diagram.scrollSettings.verticalOffset;
     // check an target as diagram
     if (targetEle.classList.contains("e-diagram")) {
       let data: any = args.draggedNodeData.text;
       //add an node at runtime
+     
+
       this.diagram.add({
-        id: data, width: 30, height: 30, offsetX: args.event.clientX, offsetY: args.event.clientY,
+        id: data, width: 400 * 0.09, height: 200 * 0.09,  
+        offsetX: horizontalOffset + (args.event.clientX +  - (10)) * zoom,
+        offsetY: verticalOffset + (args.event.clientY - (310)) * zoom, 
         annotations: [{ content: data }]
       });
       args.clonedNode.remove();
     }
-  }
+
+// this.diagram.nodes[1].offsetX = args.event.clientX - 10;
+// this.diagram.nodes[1].offsetY = args.event.clientY - 310;
+
+//this.diagram.dataBind();zoom
+ console.log('Current Zoom:'+zoom);
+ console.log('Current horizontalOffset:'+horizontalOffset);
+ console.log('Current verticalOffset:'+verticalOffset);
+ 
+ this.diagram.nodes.forEach(e=> 
+ {
+  console.log('diagram '+e.id+' node with OffsetX:'+ e.offsetX);
+  console.log('diagram '+e.id+' node with OffsetY:'+ e.offsetY);
+ });
+}
 
 
   public saveDiagram(): void {

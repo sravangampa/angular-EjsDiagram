@@ -13,7 +13,7 @@
         </div>
         <div id="diagram-space" class="sb-mobile-diagram">
             <div class="content-wrapper">
-                <ejs-diagram #diagram id="diagram" width="400px" height="200px" [snapSettings]='snapSettings' [getConnectorDefaults]='connDefaults' [getNodeDefaults]='nodeDefaults' [nodes]="nodes">
+                <ejs-diagram #diagram id="diagram" width="400px" height="200px" [snapSettings]='snapSettings' [getConnectorDefaults]='connDefaults' [getNodeDefaults]='nodeDefaults' [nodes]="nodes" (mouseOver)="onMouseOver($event)" >
                     
               <ng-template #nodeTemplate let-data>                 
                 <ng-container>

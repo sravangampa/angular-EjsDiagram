@@ -10,7 +10,7 @@ import {
   NodeModel,
   Connector,
   SnapSettingsModel,
-  PointModel
+  PointModel, NodeConstraints, DiagramConstraints
 } from "@syncfusion/ej2-diagrams";
 import { closest, Ajax } from "@syncfusion/ej2-base";
 import { Observable } from "rxjs/Observable";
@@ -29,18 +29,25 @@ export class AppComponent implements AfterViewInit {
     // console.log('clientY:' +event.clientY);
   }
   @ViewChild("diagram", null) public diagram: DiagramComponent;
+  
+  imageBlobUrl: string = "https://i.ibb.co/cY3YT4T/Floor.jpg";
   public nodes: NodeModel[] = [
     {
-      offsetX: 100,
-      offsetY: 100,
-      width: 120,
-      height: 60,
-      //Sets type of the node as Image
-      shape: { type: "HTML" }
+          id: 'floorNode',
+          offsetX: 100,
+          offsetY: 100,
+          width: 800,
+          height: 200,
+          zIndex: 0,
+          shape: { type: 'Native', content: 'https://daylightbuilding.com/floorplans/floor-1.svg' },
+          constraints: NodeConstraints.Default & ~NodeConstraints.Resize & ~NodeConstraints.Rotate & ~NodeConstraints.Drag | NodeConstraints.Tooltip | NodeConstraints.Select
+      
+   
     }
   ];
 
   public text: string = "Click";
+
   public size: string = "large";
   public nodeDefaults(node: NodeModel): NodeModel {
     let obj: NodeModel = {};
@@ -124,9 +131,11 @@ export class AppComponent implements AfterViewInit {
     //console.log("onMouseOver verticalOffsetY:" + JSON.stringify(args.actualObject));
   }
 
-  //onDragStop event
+
   public onDragStop(args: any): void {
 
+ 
+  //onDragStop event
     setTimeout(() =>{
     let targetEle: any = closest(args.target, ".e-droppable");
     targetEle = targetEle ? targetEle : args.target;
